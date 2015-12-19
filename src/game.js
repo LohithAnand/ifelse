@@ -1,13 +1,16 @@
 IE.Game = function(game){
   this._exprText = '';
-  this._score = 0;
+  this._scoreText = null;
+	this._score = 0;
   this._expression = {};
+  this._timerStart = 0;
   this._fontStyle = { font: "80px Arial", fill: "#FFBC6B", stroke: "#333", strokeThickness: 5, align: "center" };
 };
 IE.Game.prototype = {
   init: function(clear) {
 		if(clear) {
 			this._score = 0;
+      this._timerStart = 0;
 		}
 	},
   create: function() {
@@ -17,9 +20,36 @@ IE.Game.prototype = {
     this._exprText = this.showExpression(this._expression);
 
     //if else buttons
-    this.add.button(IE.GAME_WIDTH-(IE.GAME_WIDTH - 30), IE.GAME_HEIGHT - 200, 'yes', this.ifHandler, this);
-    this.add.button(IE.GAME_WIDTH-(IE.GAME_WIDTH - 330), IE.GAME_HEIGHT - 200, 'no', this.elseHandler, this);
+    this.add.button(30, 760, 'no', this.elseHandler, this);
+    this.add.button(430, 760, 'yes', this.ifHandler, this);
+
+    // initialize score
+    this.add.image(20, 20, 'score-bg');
+    // initialize the score text with 0
+		var fontStyle = { font: "35px Arial", fill: "#FF0000", stroke: "#333", strokeThickness: 3, align: "center" };
+		this._scoreText = this.add.text(60, 25, "0", fontStyle);
+
+    this._timer = this.add.sprite(200, 20, 'timer');
+		this._timer.maxWidth = this._timer.width;
   },
+
+  update: function() {
+    if(this._timerStart) {
+			var endTime = getCurrentTime();
+			var elapsedTime = Math.abs((endTime - this._timerStart)/1000);
+			if(elapsedTime < 5) {
+				this._timer.width = this._timer.maxWidth - (elapsedTime/3 * this._timer.maxWidth);
+			} else {
+				this._timer.width = 0;
+				this.state.start('GameOver', true, false, this._score);
+			}
+		}
+		this.updateScore();
+	},
+
+	updateScore: function() {
+		this._scoreText.setText(this._score);
+	},
 
   updateExpression: function(expr) {
     this._exprText.assignmentsText.setText(expr.assignments);
@@ -30,6 +60,7 @@ IE.Game.prototype = {
     this._score++;
     this._expression = this.getRandomExpression();
     this.updateExpression(this._expression);
+    this._timerStart = getCurrentTime();
   },
 
   ifHandler: function() {
@@ -52,12 +83,9 @@ IE.Game.prototype = {
     this.state.start('GameOver', true, false, this._score);
   },
 
-  update: function() {
-
-  },
   showExpression: function(expr) {
-    var assignmentsText = this.add.text(55, 280, expr.assignments, this._fontStyle);
-    var conditionText = this.add.text(220, 380, expr.conditionExpr, this._fontStyle);
+    var assignmentsText = this.add.text(50, 280, expr.assignments, this._fontStyle);
+    var conditionText = this.add.text(220, 430, expr.conditionExpr, this._fontStyle);
     return {
       'assignmentsText' : assignmentsText,
       'conditionText' : conditionText
@@ -142,3 +170,8 @@ IE.Game.prototype = {
     };
   }
 };
+
+function getCurrentTime() {
+	var currentDate = new Date();
+	return currentDate.getTime();
+}

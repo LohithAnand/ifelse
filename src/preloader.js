@@ -11,17 +11,14 @@ IE.Preloader.prototype = {
 		this.load.setPreloadSprite(this.preloadBar);
 		// load images
 		this.load.image('background', 'img/background.png');
-		this.load.image('floor', 'img/floor.png');
-		this.load.image('monster-cover', 'img/monster-cover.png');
 		this.load.image('title', 'img/title.png');
 		this.load.image('game-over', 'img/gameover.png');
 		this.load.image('score-bg', 'img/score-bg.png');
-		this.load.image('button-pause', 'img/button-pause.png');
 		this.load.image('yes', 'img/yes.png');
 		this.load.image('no', 'img/no.png');
-		// load spritesheets
-		this.load.spritesheet('candy', 'img/candy.png', 82, 98);
-		this.load.spritesheet('monster-idle', 'img/monster-idle.png', 103, 131);
+		this.load.image('reload', 'img/reload.png');
+		this.load.image('exit', 'img/exit.png');
+		this.load.image('timer', 'img/timer.png');
 		this.load.image('button-start', 'img/button-start.png');
 	},
 	create: function(){
